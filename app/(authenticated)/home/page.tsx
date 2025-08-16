@@ -12,7 +12,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import { UploadAudioDialog } from "@/components/upload-audio-dialog";
+import { UploadAudioDialog } from "@/components/uploadAudioDialog";
 
 export default function Home() {
   const { recordings, loading, refetch, addRecording } = useRecordings();

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/appSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "../context/AuthContext";
 import { redirect } from "next/navigation";
