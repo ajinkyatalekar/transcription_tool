@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import { supabase } from "@/app/utils/supabase";
 import { toast } from "sonner";
 import { Skeleton } from "./ui/skeleton";
+import { Input } from "./ui/input";
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -129,9 +130,7 @@ export function AudioPlayer({
   };
 
   if (isLoading && !providedAudioBlob) {
-    return (
-      <Skeleton className="w-full h-10" />
-    );
+    return <Skeleton className="w-full h-10" />;
   }
 
   return (
@@ -142,7 +141,7 @@ export function AudioPlayer({
         onLoadedMetadata={async () => {
           const audio = audioRef.current;
           if (!audio) return;
-        
+
           if (isFinite(audio.duration)) {
             setDuration(audio.duration);
           } else {
@@ -152,7 +151,7 @@ export function AudioPlayer({
               audio.currentTime = 0; // reset back
               audio.removeEventListener("timeupdate", setRealDuration);
             };
-        
+
             audio.currentTime = 1e10; // big number
             audio.addEventListener("timeupdate", setRealDuration);
           }
@@ -196,7 +195,20 @@ export function AudioPlayer({
             {formatTime(currentTime)}
           </span>
 
-          <div className="flex-1 relative">
+          <div className="flex-1 relative h-1">
+            
+            {/* Background bar */}
+            <div className="absolute inset-0 bg-muted-foreground opacity-30 rounded-lg pointer-events-none w-[99%]" />
+
+            {/* Progress bar */}
+            <div
+              className="absolute inset-y-0 left-0 bg-primary rounded-lg pointer-events-none"
+              style={{
+                width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
+              }}
+            />
+
+            {/* Actual range input */}
             <input
               type="range"
               min="0"
@@ -204,16 +216,12 @@ export function AudioPlayer({
               step="0.1"
               value={currentTime}
               onChange={handleSeek}
-              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer absolute z-10"
+              className="absolute inset-0 w-full h-2 opacity-0 cursor-pointer z-10"
               disabled={(!audioBlob && !providedAudioBlob) || duration === 0}
             />
-            <div
-              className="absolute top-0 left-0 h-2 bg-primary rounded-l-lg pointer-events-none opacity-50 z-11"
-              style={{
-                width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
-              }}
-            />
           </div>
+
+
 
           <span className="text-xs text-muted-foreground min-w-[2.5rem]">
             {formatTime(duration)}

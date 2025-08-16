@@ -63,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="px-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 w-full p-2 rounded-md hover:bg-accent transition-colors border border-gray-200">
+                <button className="flex items-center gap-3 w-full p-2 rounded-md hover:bg-accent transition-colors border border-gray-200 cursor-pointer">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-medium">
                     {user.email?.charAt(0).toUpperCase()}
                   </div>
