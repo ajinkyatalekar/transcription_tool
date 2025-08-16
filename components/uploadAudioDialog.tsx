@@ -27,9 +27,19 @@ export function UploadAudioDialog() {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check if it's an audio file
-      if (!file.type.startsWith("audio/")) {
-        toast.error("Please select an audio file");
+      // Check if it's a WAV file
+      if (
+        file.type !== "audio/wav" &&
+        !file.name.toLowerCase().endsWith(".wav")
+      ) {
+        toast.error("Please select a .wav file");
+        return;
+      }
+
+      // Check file size (20MB = 20 * 1024 * 1024 bytes)
+      const maxSize = 20 * 1024 * 1024; // 20MB in bytes
+      if (file.size > maxSize) {
+        toast.error("File size must be under 20MB");
         return;
       }
 
@@ -83,8 +93,8 @@ export function UploadAudioDialog() {
         <DialogHeader>
           <DialogTitle>Upload Audio File</DialogTitle>
           <DialogDescription>
-            Select an audio file to transcribe. The file will be processed and
-            added to your transcript history.
+            Select a .wav file under 20MB to transcribe. The file will be
+            processed and added to your transcript history.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -93,7 +103,7 @@ export function UploadAudioDialog() {
             <Input
               id="audio-file"
               type="file"
-              accept="audio/*"
+              accept=".wav,audio/wav"
               onChange={handleFileSelect}
               ref={fileInputRef}
             />

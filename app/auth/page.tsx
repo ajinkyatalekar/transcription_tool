@@ -15,7 +15,7 @@ export default function AuthPage() {
   const mode = searchParams.get("mode") || "login";
 
   const { signUp, signIn, user } = useAuth();
-
+  const router = useRouter();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
@@ -53,7 +53,10 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="flex flex-row items-center justify-center gap-1">
+      <div
+        className="flex flex-row items-center justify-center gap-1 cursor-pointer"
+        onClick={() => router.push("/home")}
+      >
         <Image src="/soundwave.svg" alt="soundwave" width={50} height={50} />
         <p className="text-3xl">Transcription Tool</p>
       </div>
