@@ -13,7 +13,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useParams, useRouter } from "next/navigation";
 import { useRecordings } from "@/app/context/RecordingsContext";
 import { AudioPlayer } from "@/components/audioPlayer";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase";
 import { toast } from "sonner";
@@ -27,22 +26,20 @@ export default function TranscriptPage() {
   const router = useRouter();
   const { recordings } = useRecordings();
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const recording = recordings.find((recording) => recording.id === id);
 
   // Download audio from Supabase storage
   useEffect(() => {
+    const currentAudio = audioRef.current;
+
     const downloadAudio = async () => {
       if (!recording?.audio_url) {
-        setIsLoading(false);
         return;
       }
 
       try {
-        setIsLoading(true);
-
         // Extract the file path from the audio_url
         const { data, error } = await supabase.storage
           .from("audio")
@@ -56,13 +53,13 @@ export default function TranscriptPage() {
           setAudioBlob(data);
           // Create object URL for the audio
           const objectUrl = URL.createObjectURL(data);
-          if (audioRef.current) {
-            audioRef.current.src = objectUrl;
+          if (currentAudio) {
+            currentAudio.src = objectUrl;
             // Load the audio metadata
-            audioRef.current.load();
+            currentAudio.load();
 
             // Add error handling for audio loading
-            audioRef.current.onerror = () => {
+            currentAudio.onerror = () => {
               console.error("Error loading audio file");
               toast.error("Failed to load audio file");
             };
@@ -71,8 +68,6 @@ export default function TranscriptPage() {
       } catch (error) {
         console.error("Error downloading audio:", error);
         toast.error("Failed to load audio file");
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -80,8 +75,8 @@ export default function TranscriptPage() {
 
     // Cleanup function to revoke object URL
     return () => {
-      if (audioRef.current && audioRef.current.src) {
-        URL.revokeObjectURL(audioRef.current.src);
+      if (currentAudio && currentAudio.src) {
+        URL.revokeObjectURL(currentAudio.src);
       }
     };
   }, [recording?.audio_url]);
@@ -92,7 +87,7 @@ export default function TranscriptPage() {
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-2">Recording not found</h2>
           <p className="text-muted-foreground">
-            The recording you're looking for doesn't exist.
+            The recording you&apos;re looking for doesn&apos;t exist.
           </p>
         </div>
       </div>

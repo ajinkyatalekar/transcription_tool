@@ -3,20 +3,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCcw } from "lucide-react";
-import { supabase } from "@/app/utils/supabase";
 import { toast } from "sonner";
 import { Skeleton } from "./ui/skeleton";
-import { Input } from "./ui/input";
 
 interface AudioPlayerProps {
   audioUrl: string;
-  title?: string;
   audioBlob?: Blob | null;
 }
 
 export function AudioPlayer({
   audioUrl,
-  title,
   audioBlob: providedAudioBlob,
 }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -25,7 +21,6 @@ export function AudioPlayer({
   const [audioBlob, setAudioBlob] = useState<Blob | null>(
     providedAudioBlob || null
   );
-  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Download audio from Supabase storage (only if no audioBlob is provided)
@@ -129,7 +124,7 @@ export function AudioPlayer({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  if (isLoading && !providedAudioBlob) {
+  if (!providedAudioBlob) {
     return <Skeleton className="w-full h-10" />;
   }
 
@@ -196,7 +191,6 @@ export function AudioPlayer({
           </span>
 
           <div className="flex-1 relative h-1">
-            
             {/* Background bar */}
             <div className="absolute inset-0 bg-muted-foreground opacity-30 rounded-lg pointer-events-none w-[99%]" />
 
@@ -220,8 +214,6 @@ export function AudioPlayer({
               disabled={(!audioBlob && !providedAudioBlob) || duration === 0}
             />
           </div>
-
-
 
           <span className="text-xs text-muted-foreground min-w-[2.5rem]">
             {formatTime(duration)}

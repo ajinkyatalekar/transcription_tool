@@ -13,11 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { useRecordings } from "@/app/context/RecordingsContext";
 import { useRouter } from "next/navigation";
-import { formatDate } from "@/lib/utils";
 import { Database } from "@/database.types";
 
 type Recording = Database["public"]["Tables"]["recordings"]["Row"];
@@ -55,7 +54,7 @@ export function ProjectSettingsDialog({
       });
       setOpen(false);
       toast.success("Project settings updated successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update project settings");
     } finally {
       setIsLoading(false);
@@ -74,7 +73,7 @@ export function ProjectSettingsDialog({
       setShowDeleteConfirm(false);
       router.push("/home");
       toast.success("Project deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete project");
     } finally {
       setIsDeleting(false);
@@ -163,8 +162,8 @@ export function ProjectSettingsDialog({
             </DialogHeader>
             <div className="py-4">
               <p className="text-sm text-muted-foreground mb-4">
-                Are you sure you want to delete "{recording.title}"? This action
-                cannot be undone.
+                Are you sure you want to delete &quot;{recording.title}&quot;?
+                This action cannot be undone.
               </p>
             </div>
             <div className="flex gap-2">

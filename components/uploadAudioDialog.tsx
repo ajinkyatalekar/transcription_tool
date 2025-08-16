@@ -61,7 +61,7 @@ export function UploadAudioDialog() {
       await uploadAudio(selectedFile, title);
       setOpen(false);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error is already handled in the hook
     }
   };

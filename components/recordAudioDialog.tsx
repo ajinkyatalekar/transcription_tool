@@ -111,7 +111,7 @@ export function RecordAudioDialog() {
       await uploadAudio(file, title);
       setOpen(false);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error is already handled in the hook
     } finally {
       setIsUploading(false);

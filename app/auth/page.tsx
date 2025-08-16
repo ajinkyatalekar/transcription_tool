@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter, redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
 
-export default function AuthPage() {
+function AuthContent() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "login";
 
@@ -29,18 +29,20 @@ export default function AuthPage() {
     setIsLoading(true);
     try {
       await signIn(loginEmail, loginPassword);
-    } catch (error) {
+    } catch {
+      // Error handling is done in the auth context
     }
     setIsLoading(false);
   };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     setIsLoading(true);
     try {
       await signUp(registerEmail, registerPassword);
-    } catch (error) {
+    } catch {
+      // Error handling is done in the auth context
     }
     setIsLoading(false);
   };
@@ -156,5 +158,13 @@ export default function AuthPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthContent />
+    </Suspense>
   );
 }
