@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { supabase } from "../utils/supabase";
 import { toast } from "sonner";
+import { useAuth } from "./AuthContext";
 
 interface Recording {
   id: string;
@@ -46,6 +47,7 @@ export const RecordingsProvider: React.FC<RecordingsProviderProps> = ({
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchRecordings = async () => {
     try {
@@ -159,8 +161,10 @@ export const RecordingsProvider: React.FC<RecordingsProviderProps> = ({
 
   // Initial fetch on mount
   useEffect(() => {
-    fetchRecordings();
-  }, []);
+    if (user) {
+      fetchRecordings();
+    }
+  }, [user]);
 
   const value: RecordingsContextType = {
     recordings,

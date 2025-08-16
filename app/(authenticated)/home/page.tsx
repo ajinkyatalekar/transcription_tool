@@ -13,6 +13,8 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import { UploadAudioDialog } from "@/components/uploadAudioDialog";
+import { RecordAudioDialog } from "@/components/recordAudioDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   const { recordings, loading, refetch, addRecording } = useRecordings();
@@ -38,10 +40,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="p-4 flex flex-col gap-4">
         <div className="flex gap-4 mb-4">
-          <Button className="flex-1 h-20" variant="default">
-            <Mic className="w-4 h-4" />
-            Record Audio
-          </Button>
+          <RecordAudioDialog />
           <UploadAudioDialog />
         </div>
 
@@ -54,7 +53,7 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <p>Loading recordings...</p>
+          <Skeleton className="w-full h-80" />
         ) : recordings.length === 0 ? (
           <p>
             No transcripts found. Get started by adding your first recording.

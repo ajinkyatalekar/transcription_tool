@@ -25,10 +25,13 @@ import { useRecordings } from "@/app/context/RecordingsContext";
 import Image from "next/image";
 import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, signOut } = useAuth();
   const { recordings, loading } = useRecordings();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     try {
@@ -41,7 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className="flex flex-row items-center justify-center mr-2 gap-1">
+        <div className="flex flex-row items-center justify-center mr-2 gap-1 cursor-pointer" onClick={() => router.push("/home")}>
           <Image src="/soundwave.svg" alt="soundwave" width={35} height={35} />
           <p className="text-lg font-sans">Transcription Tool</p>
         </div>
@@ -93,9 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               {loading ? (
-                <div className="px-3 py-2 text-sm text-muted-foreground">
-                  Loading recordings...
-                </div>
+                <Skeleton className="w-full h-20" />
               ) : recordings.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-muted-foreground">
                   No recordings yet

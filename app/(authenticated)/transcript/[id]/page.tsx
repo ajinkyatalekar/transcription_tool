@@ -24,12 +24,12 @@ export default function TranscriptPage() {
         />
         <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbItem className="block">
                 <BreadcrumbLink onClick={() => router.push("/home")} className="cursor-pointer">
                   Dashboard
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbSeparator className="block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>{recording?.title}</BreadcrumbPage>
               </BreadcrumbItem>
