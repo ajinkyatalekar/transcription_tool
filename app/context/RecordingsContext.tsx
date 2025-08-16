@@ -10,18 +10,9 @@ import React, {
 import { supabase } from "../utils/supabase";
 import { toast } from "sonner";
 import { useAuth } from "./AuthContext";
+import { Database } from "@/database.types";
 
-interface Recording {
-  id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
-  user_id?: string;
-  file_path?: string;
-  duration?: number;
-  status?: string;
-  // Add more fields as needed based on your Supabase table structure
-}
+type Recording = Database["public"]["Tables"]["recordings"]["Row"];
 
 interface RecordingsContextType {
   recordings: Recording[];

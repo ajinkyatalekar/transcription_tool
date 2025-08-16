@@ -68,7 +68,8 @@ export default function Home() {
               >
                 <h3 className="font-semibold">{recording.title}</h3>
                 <p className="text-sm text-gray-500">
-                  Created: {new Date(recording.created_at).toLocaleDateString()}
+                  {recording.transcript?.slice(0, 50)}
+                  {recording.transcript?.length && recording.transcript?.length > 50 && "..."}
                 </p>
               </div>
             ))}

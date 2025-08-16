@@ -10,7 +10,7 @@ export default function TranscriptPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const { recordings, loading } = useRecordings();
+  const { recordings } = useRecordings();
 
   const recording = recordings.find((recording) => recording.id === id);
 
