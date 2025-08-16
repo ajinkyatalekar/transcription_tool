@@ -35,7 +35,8 @@ export function UploadAudioDialog() {
 
       setSelectedFile(file);
       // Set default title to filename without extension
-      const fileName = file.name.replace(/\.[^/.]+$/, "");
+      // const fileName = file.name.replace(/\.[^/.]+$/, "");
+      const fileName = file.name;
       setTitle(fileName);
     }
   };

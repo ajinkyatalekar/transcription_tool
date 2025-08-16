@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useRecordings } from "../../context/RecordingsContext";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Mic, RefreshCcw } from "lucide-react";
+import { RefreshCcw, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Breadcrumb,
@@ -17,7 +16,7 @@ import { RecordAudioDialog } from "@/components/recordAudioDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const { recordings, loading, refetch, addRecording } = useRecordings();
+  const { recordings, loading, refetch } = useRecordings();
   const router = useRouter();
 
   return (
@@ -55,9 +54,17 @@ export default function Home() {
         {loading ? (
           <Skeleton className="w-full h-80" />
         ) : recordings.length === 0 ? (
-          <p>
-            No transcripts found. Get started by adding your first recording.
-          </p>
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <AlertCircle className="w-12 h-12 text-gray-400" />
+            </div>
+            <p className="text-lg font-medium text-gray-600">
+              No Transcripts Found
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              Get started by adding your first recording
+            </p>
+          </div>
         ) : (
           <div className="grid gap-4">
             {recordings.map((recording) => (
@@ -69,7 +76,9 @@ export default function Home() {
                 <h3 className="font-semibold">{recording.title}</h3>
                 <p className="text-sm text-gray-500">
                   {recording.transcript?.slice(0, 50)}
-                  {recording.transcript?.length && recording.transcript?.length > 50 && "..."}
+                  {recording.transcript?.length &&
+                    recording.transcript?.length > 50 &&
+                    "..."}
                 </p>
               </div>
             ))}

@@ -3,7 +3,7 @@ import { supabase, supabaseAdmin } from "@/app/utils/supabase";
 
 export async function POST(request) {
   try {
-    const { audioBase64, title } = await request.json();
+    const { audioBase64, title, audioUrl } = await request.json();
     
     // Get user ID from the Authorization header
     const authHeader = request.headers.get('authorization');
@@ -41,7 +41,7 @@ export async function POST(request) {
     const { data: recording, error: insertError } = await supabaseAdmin
       .from('recordings')
       .insert({
-        audio: Buffer.from(audioBase64, "base64"),
+        audio_url: audioUrl,
         title: title,
         user_id: user.id,
         transcript: transcript

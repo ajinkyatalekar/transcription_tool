@@ -1,11 +1,27 @@
 import { useState } from "react";
 import { useRecordings } from "@/app/context/RecordingsContext";
 import { toast } from "sonner";
+import { supabase } from "@/app/utils/supabase";
+import { v4 as uuidv4 } from 'uuid';
 
 interface UseUploadAudioReturn {
   uploadAudio: (selectedFile: File, title: string) => Promise<void>;
   isUploading: boolean;
 }
+
+const uploadFile = async (file: File) => {
+  const { data, error } = await supabase.storage
+    .from('audio')
+    .upload(`${(await supabase.auth.getUser()).data.user?.id}/${uuidv4()}`, file);
+
+  if (error) {
+    console.error('Error uploading file:', error.message);
+  } else {
+    console.log('File uploaded successfully:', data);
+
+    return data.path;
+  }
+};
 
 export function useTranscribe(): UseUploadAudioReturn {
   const [isUploading, setIsUploading] = useState(false);
@@ -19,7 +35,8 @@ export function useTranscribe(): UseUploadAudioReturn {
 
     setIsUploading(true);
     try {
-      // Convert file to base64
+      const path = await uploadFile(selectedFile);
+      
       const arrayBuffer = await selectedFile.arrayBuffer();
       const base64 = Buffer.from(arrayBuffer).toString("base64");
 
@@ -45,6 +62,7 @@ export function useTranscribe(): UseUploadAudioReturn {
         body: JSON.stringify({
           audioBase64: base64,
           title: title.trim(),
+          audioUrl: path,
         }),
       });
 

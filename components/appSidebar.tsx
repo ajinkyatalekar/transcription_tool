@@ -27,6 +27,7 @@ import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
+import { AlertCircle } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, signOut } = useAuth();
@@ -99,7 +100,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Skeleton className="w-full h-20" />
               ) : recordings.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-muted-foreground">
-                  No recordings yet
+                  <div className="flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    No recordings yet
+                  </div>
                 </div>
               ) : (
                 recordings.map((recording) => (
