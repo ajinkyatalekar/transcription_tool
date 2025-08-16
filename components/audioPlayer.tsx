@@ -204,15 +204,15 @@ export function AudioPlayer({
               step="0.1"
               value={currentTime}
               onChange={handleSeek}
-              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer relative z-10"
+              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer absolute z-10"
               disabled={(!audioBlob && !providedAudioBlob) || duration === 0}
             />
-            {/* <div
-              className="absolute top-0 left-0 h-2 bg-primary rounded-lg pointer-events-none opacity-50 z-0"
+            <div
+              className="absolute top-0 left-0 h-2 bg-primary rounded-l-lg pointer-events-none opacity-50 z-11"
               style={{
                 width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
               }}
-            /> */}
+            />
           </div>
 
           <span className="text-xs text-muted-foreground min-w-[2.5rem]">
