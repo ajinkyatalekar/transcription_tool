@@ -14,6 +14,7 @@ import {
 import { UploadAudioDialog } from "@/components/uploadAudioDialog";
 import { RecordAudioDialog } from "@/components/recordAudioDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatDate } from "@/lib/utils";
 
 export default function Home() {
   const { recordings, loading, refetch } = useRecordings();
@@ -73,11 +74,16 @@ export default function Home() {
                 className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={() => router.push(`/transcript/${recording.id}`)}
               >
-                <h3 className="font-semibold">{recording.title}</h3>
+                <div className="flex  justify-between">
+                  <h3 className="font-semibold">{recording.title}</h3>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(recording.created_at)}
+                  </p>
+                </div>
                 <p className="text-sm text-gray-500">
-                  {recording.transcript?.slice(0, 50)}
+                  {recording.transcript?.slice(0, 80)}
                   {recording.transcript?.length &&
-                    recording.transcript?.length > 50 &&
+                    recording.transcript?.length > 80 &&
                     "..."}
                 </p>
               </div>

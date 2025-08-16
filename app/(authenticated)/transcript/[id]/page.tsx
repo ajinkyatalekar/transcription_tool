@@ -17,6 +17,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase";
 import { toast } from "sonner";
+import { EditIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
+import { ProjectSettingsDialog } from "@/components/projectSettingsDialog";
 
 export default function TranscriptPage() {
   const { id } = useParams();
@@ -122,14 +126,24 @@ export default function TranscriptPage() {
       </header>
 
       <main className="flex-1 overflow-auto p-6">
-        <div className="flex flex-col gap-2">
-          <p className="text-2xl font-semibold">{recording.title}</p>
-          <p className="text-muted-foreground text-sm">
-            {recording.description || "No description"}
-          </p>
-          <p className="text-muted-foreground text-sm">
-            Created: {new Date(recording.created_at).toLocaleString()}
-          </p>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-semibold">{recording.title}</p>
+            <ProjectSettingsDialog recording={recording}>
+              <Button variant="outline">
+                <EditIcon className="w-4 h-4" />
+                Project Settings
+              </Button>
+            </ProjectSettingsDialog>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            <span>{recording.description || "No description"}</span>
+            <Separator
+              orientation="vertical"
+              className="data-[orientation=vertical]:h-4"
+            />
+            <span>Created {formatDate(recording.created_at)}</span>
+          </div>
         </div>
         <Separator className="my-4" />
         <div className="mt-4" />

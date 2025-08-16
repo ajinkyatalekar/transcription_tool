@@ -48,6 +48,7 @@ export const RecordingsProvider: React.FC<RecordingsProviderProps> = ({
       const { data, error: fetchError } = await supabase
         .from("recordings")
         .select("*")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false });
 
       if (fetchError) {
@@ -131,7 +132,7 @@ export const RecordingsProvider: React.FC<RecordingsProviderProps> = ({
 
       const { error: deleteError } = await supabase
         .from("recordings")
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq("id", id);
 
       if (deleteError) {
