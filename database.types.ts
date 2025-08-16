@@ -17,6 +17,7 @@ export type Database = {
       recordings: {
         Row: {
           audio: string | null
+          audio_url: string | null
           created_at: string
           deleted_at: string | null
           description: string | null
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           audio?: string | null
+          audio_url?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           audio?: string | null
+          audio_url?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
