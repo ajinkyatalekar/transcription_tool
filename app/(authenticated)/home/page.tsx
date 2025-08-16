@@ -4,9 +4,15 @@ import { Button } from "@/components/ui/button";
 import { useRecordings } from "../../context/RecordingsContext";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Mic, RefreshCcw, Upload } from "lucide-react";
+import { Mic, RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import { UploadAudioDialog } from "@/components/upload-audio-dialog";
 
 export default function Home() {
   const { recordings, loading, refetch, addRecording } = useRecordings();
@@ -21,12 +27,12 @@ export default function Home() {
           className="mr-2 data-[orientation=vertical]:h-4"
         />
         <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </header>
 
       {/* Main Content */}
@@ -36,10 +42,7 @@ export default function Home() {
             <Mic className="w-4 h-4" />
             Record Audio
           </Button>
-          <Button className="flex-1 h-20" variant="outline">
-            <Upload className="w-4 h-4" />
-            Upload Audio
-          </Button>
+          <UploadAudioDialog />
         </div>
 
         <div className="flex items-center">
@@ -59,7 +62,11 @@ export default function Home() {
         ) : (
           <div className="grid gap-4">
             {recordings.map((recording) => (
-              <div key={recording.id} className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => router.push(`/transcript/${recording.id}`)}>
+              <div
+                key={recording.id}
+                className="p-4 border rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => router.push(`/transcript/${recording.id}`)}
+              >
                 <h3 className="font-semibold">{recording.title}</h3>
                 <p className="text-sm text-gray-500">
                   Created: {new Date(recording.created_at).toLocaleDateString()}
