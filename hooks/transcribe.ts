@@ -79,11 +79,9 @@ export function useTranscribe(): UseUploadAudioReturn {
 
       toast.success("Audio uploaded and transcribed successfully!");
     } catch (error) {
-      console.error("Upload error:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to upload audio"
+        "Something went wrong. Please try again later."
       );
-      throw error; // Re-throw so the calling component can handle it if needed
     } finally {
       setIsUploading(false);
     }

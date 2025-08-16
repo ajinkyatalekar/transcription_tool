@@ -75,7 +75,7 @@ export default function Home() {
                 onClick={() => router.push(`/transcript/${recording.id}`)}
               >
                 <div className="flex  justify-between">
-                  <h3 className="font-semibold">{recording.title}</h3>
+                  <h3 className="">{recording.title}</h3>
                   <p className="text-sm text-gray-500">
                     {formatDate(recording.created_at)}
                   </p>
