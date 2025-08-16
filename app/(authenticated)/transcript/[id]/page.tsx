@@ -73,7 +73,9 @@ export default function TranscriptPage() {
             Created: {new Date(recording.created_at).toLocaleString()}
           </p>
         </div>
+        <Separator className="my-4" />
         <div className="mt-4"/>
+        
         <p>{recording.transcript}</p>
       </main>
 
