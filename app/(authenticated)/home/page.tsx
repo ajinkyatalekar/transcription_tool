@@ -15,10 +15,32 @@ import { UploadAudioDialog } from "@/components/uploadAudioDialog";
 import { RecordAudioDialog } from "@/components/recordAudioDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
+import { useEffect } from "react";
+
+const testRun = async () => {
+  try {
+    const response = await fetch("http://3.22.222.144:8000/run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data: "Hello from frontend!" }), // must match RunRequest
+    });
+
+    const result = await response.json();
+    console.log("API Response:", result);
+  } catch (error) {
+    console.error("Error calling API:", error);
+  }
+};
 
 export default function Home() {
   const { recordings, loading, refetch } = useRecordings();
   const router = useRouter();
+
+  useEffect(() => {
+    testRun();
+  }, []);
 
   return (
     <>
