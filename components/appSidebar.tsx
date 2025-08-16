@@ -26,13 +26,14 @@ import Image from "next/image";
 import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { AlertCircle } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, signOut } = useAuth();
   const { recordings, loading } = useRecordings();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     try {
@@ -45,7 +46,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className="flex flex-row items-center justify-center mr-2 gap-1 cursor-pointer" onClick={() => router.push("/home")}>
+        <div
+          className="flex flex-row items-center justify-center mr-2 gap-1 cursor-pointer"
+          onClick={() => router.push("/home")}
+        >
           <Image src="/soundwave.svg" alt="soundwave" width={35} height={35} />
           <p className="text-lg font-sans">Transcription Tool</p>
         </div>
@@ -93,6 +97,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         )}
 
         <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname === "/home"}>
+                  <Link href="/home">Dashboard</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="-mt-4">
           <SidebarGroupLabel>Transcript History</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -108,7 +124,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               ) : (
                 recordings.map((recording) => (
                   <SidebarMenuItem key={recording.id}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === `/transcript/${recording.id}`}
+                    >
                       <Link href={`/transcript/${recording.id}`}>
                         {recording.title}
                       </Link>
