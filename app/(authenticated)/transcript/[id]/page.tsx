@@ -13,14 +13,74 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useParams, useRouter } from "next/navigation";
 import { useRecordings } from "@/app/context/RecordingsContext";
 import { AudioPlayer } from "@/components/audioPlayer";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/app/utils/supabase";
+import { toast } from "sonner";
 
 export default function TranscriptPage() {
   const { id } = useParams();
   const router = useRouter();
-
   const { recordings } = useRecordings();
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const recording = recordings.find((recording) => recording.id === id);
+
+  // Download audio from Supabase storage
+  useEffect(() => {
+    const downloadAudio = async () => {
+      if (!recording?.audio_url) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+
+        // Extract the file path from the audio_url
+        const { data, error } = await supabase.storage
+          .from("audio")
+          .download(recording.audio_url);
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setAudioBlob(data);
+          // Create object URL for the audio
+          const objectUrl = URL.createObjectURL(data);
+          if (audioRef.current) {
+            audioRef.current.src = objectUrl;
+            // Load the audio metadata
+            audioRef.current.load();
+
+            // Add error handling for audio loading
+            audioRef.current.onerror = () => {
+              console.error("Error loading audio file");
+              toast.error("Failed to load audio file");
+            };
+          }
+        }
+      } catch (error) {
+        console.error("Error downloading audio:", error);
+        toast.error("Failed to load audio file");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    downloadAudio();
+
+    // Cleanup function to revoke object URL
+    return () => {
+      if (audioRef.current && audioRef.current.src) {
+        URL.revokeObjectURL(audioRef.current.src);
+      }
+    };
+  }, [recording?.audio_url]);
 
   if (!recording) {
     return (
@@ -63,9 +123,7 @@ export default function TranscriptPage() {
 
       <main className="flex-1 overflow-auto p-6">
         <div className="flex flex-col gap-2">
-          <p className="text-2xl font-semibold">
-            {recording.title}
-          </p>
+          <p className="text-2xl font-semibold">{recording.title}</p>
           <p className="text-muted-foreground text-sm">
             {recording.description || "No description"}
           </p>
@@ -74,8 +132,8 @@ export default function TranscriptPage() {
           </p>
         </div>
         <Separator className="my-4" />
-        <div className="mt-4"/>
-        
+        <div className="mt-4" />
+
         <p>{recording.transcript}</p>
       </main>
 
@@ -83,9 +141,7 @@ export default function TranscriptPage() {
       <footer className="border-t bg-background p-4">
         <div className="max-w-4xl mx-auto">
           {recording.audio_url ? (
-            <AudioPlayer
-              audioUrl={recording.audio_url}
-            />
+            <AudioPlayer audioUrl={recording.audio_url} audioBlob={audioBlob} />
           ) : (
             <div className="flex items-center justify-center p-4 border rounded-lg">
               <div className="text-sm text-muted-foreground">
