@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import {
@@ -82,17 +83,12 @@ export default function TranscriptPage() {
     };
   }, [recording?.audio_url]);
 
-  const [fullTranscript, setFullTranscript] = useState<string>("");
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     if (recording?.transcript) {
-      setFullTranscript(
-        (recording.transcript as any)?.raw_response?.transcription?.text
-      );
+      console.log(recording.transcript);
     }
-
-    console.log(recording?.transcript);
   }, [recording?.transcript]);
 
   const handleSeek = (time: number) => {

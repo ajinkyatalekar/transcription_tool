@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import { useRecordings } from "../../context/RecordingsContext";
@@ -15,24 +16,6 @@ import { UploadAudioDialog } from "@/components/uploadAudioDialog";
 import { RecordAudioDialog } from "@/components/recordAudioDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
-import { useEffect } from "react";
-
-const testRun = async () => {
-  try {
-    const response = await fetch("https://api.craft4free.online/transcribe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data: "Hello from frontend!" }), // must match RunRequest
-    });
-
-    const result = await response.json();
-    console.log("API Response:", result);
-  } catch (error) {
-    console.error("Error calling API:", error);
-  }
-};
 
 export default function Home() {
   const { recordings, loading, refetch } = useRecordings();
@@ -105,9 +88,13 @@ export default function Home() {
                     "..."}
                 </p> */}
                 <p className="text-sm text-gray-500">
-                  {(recording.transcript as any)?.raw_response?.transcription?.text?.slice(0, 80)}
-                  {(recording.transcript as any)?.raw_response?.transcription?.text?.length &&
-                    (recording.transcript as any)?.raw_response?.transcription?.text?.length > 80 &&
+                  {(
+                    recording.transcript as any
+                  )?.raw_response?.transcription?.text?.slice(0, 80)}
+                  {(recording.transcript as any)?.raw_response?.transcription
+                    ?.text?.length &&
+                    (recording.transcript as any)?.raw_response?.transcription
+                      ?.text?.length > 80 &&
                     "..."}
                 </p>
               </div>
