@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {user.email?.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-medium truncate">{user.email}</p>
+                    <p className="text-sm font-medium truncate">{user.email?.length && user.email?.length > 20 ? user.email?.slice(0, 20) + "..." : user.email}</p>
                   </div>
                 </button>
               </DropdownMenuTrigger>

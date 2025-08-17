@@ -59,33 +59,31 @@ export function InteractiveTranscript({
   onTranscriptUpdate,
 }: InteractiveTranscriptProps) {
   const [hoveredWord, setHoveredWord] = useState<Word | null>(null);
-  const [activeWord, setActiveWord] = useState<Word | null>(null);
+  const [activeWords, setActiveWords] = useState<Word[]>([]);
   const [editingSegmentId, setEditingSegmentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
 
-  // Find the currently active word based on currentTime
+  // Find all currently active words based on currentTime
   useEffect(() => {
     if (!transcript.raw_response?.transcription?.segments) return;
 
     const segments = transcript.raw_response.transcription.segments;
-    let foundWord: Word | null = null;
+    const foundWords: Word[] = [];
 
     for (const segment of segments) {
       for (const word of segment.words) {
         if (currentTime >= word.start && currentTime <= word.end) {
-          foundWord = word;
-          break;
+          foundWords.push(word);
         }
       }
-      if (foundWord) break;
     }
 
-    setActiveWord(foundWord);
+    setActiveWords(foundWords);
   }, [currentTime, transcript]);
 
   const handleWordClick = (word: Word) => {
-    onSeek(word.start);
+    onSeek(word.start+0.01);
   };
 
   const formatTime = (time: number) => {
@@ -226,7 +224,7 @@ export function InteractiveTranscript({
                 <>
                   <div className="flex-1 flex flex-wrap gap-1 leading-relaxed">
                     {segment.words.map((word, wordIndex) => {
-                      const isActive = activeWord === word;
+                      const isActive = activeWords.includes(word);
                       const isHovered = hoveredWord === word;
                       const isFirstWord = wordIndex === 0;
                       const showTimestampByDefault =
@@ -236,10 +234,10 @@ export function InteractiveTranscript({
                         <span
                           key={`${segment.id}-${wordIndex}`}
                           className={cn(
-                            "group relative inline-block cursor-pointer px-1 py-0.5 rounded transition-all duration-200",
-                            "hover:bg-primary/10 hover:text-primary",
+                            "group relative inline-block cursor-pointer px-1 py-[5px] rounded transition-all duration-200",
+                            "hover:bg-primary/10 hover:text-primary font-light",
                             isActive &&
-                              "bg-primary/20 text-primary font-medium shadow-sm",
+                              "bg-primary/20 text-primary shadow-sm",
                             isHovered && "bg-primary/10"
                           )}
                           onClick={() => handleWordClick(word)}
@@ -249,10 +247,11 @@ export function InteractiveTranscript({
                           {word.text}
                           <span
                             className={cn(
-                              "absolute -bottom-6 left-0 text-xs text-muted-foreground transition-opacity whitespace-nowrap",
+                              "absolute -bottom-3 left-0 text-xs text-muted-foreground transition-opacity whitespace-nowrap",
                               showTimestampByDefault
                                 ? "opacity-100"
-                                : "opacity-0 group-hover:opacity-100"
+                                : "opacity-0"
+                              // : "opacity-0 group-hover:opacity-100"
                             )}
                           >
                             {formatTime(word.start)}
@@ -266,7 +265,7 @@ export function InteractiveTranscript({
                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
                     title="Edit segment"
                   >
-                    <Pencil className="w-4 h-4 text-muted-foreground" />
+                    <Pencil className="w-4 h-4 text-muted-foreground cursor-pointer" />
                   </button>
                 </>
               )}

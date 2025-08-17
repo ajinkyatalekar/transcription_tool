@@ -111,12 +111,11 @@ export function ProjectSettingsDialog({
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
+                <Input
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Enter project description"
-                  rows={3}
                 />
               </div>
               <div className="grid gap-2">
