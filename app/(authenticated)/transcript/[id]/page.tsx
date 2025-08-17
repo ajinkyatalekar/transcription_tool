@@ -146,7 +146,7 @@ export default function TranscriptPage() {
         </Breadcrumb>
       </header>
 
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-6 mb-40">
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <p className="text-2xl font-semibold">{recording.title}</p>
