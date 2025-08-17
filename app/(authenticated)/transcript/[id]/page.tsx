@@ -81,6 +81,16 @@ export default function TranscriptPage() {
     };
   }, [recording?.audio_url]);
 
+  const [fullTranscript, setFullTranscript] = useState<string>("");
+
+  useEffect(() => {
+    if (recording?.transcript) {
+      setFullTranscript((recording.transcript as any)?.raw_response?.transcription?.text);
+    }
+
+    console.log(recording?.transcript);
+  }, [recording?.transcript]);
+
   if (!recording) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -142,8 +152,8 @@ export default function TranscriptPage() {
         </div>
         <Separator className="my-4" />
         <div className="mt-4" />
-
-        <p>{recording.transcript}</p>
+        <p>{JSON.stringify(recording.transcript)}</p>
+        <p>{fullTranscript}</p>
       </main>
 
       {/* Audio Player - Fixed at bottom */}

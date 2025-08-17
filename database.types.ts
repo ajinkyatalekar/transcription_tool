@@ -17,35 +17,38 @@ export type Database = {
       recordings: {
         Row: {
           audio: string | null
+          audio_duration: number | null
           audio_url: string | null
           created_at: string
           deleted_at: string | null
           description: string | null
           id: string
           title: string
-          transcript: string | null
+          transcript: Json | null
           user_id: string
         }
         Insert: {
           audio?: string | null
+          audio_duration?: number | null
           audio_url?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
           id?: string
           title: string
-          transcript?: string | null
+          transcript?: Json | null
           user_id?: string
         }
         Update: {
           audio?: string | null
+          audio_duration?: number | null
           audio_url?: string | null
           created_at?: string
           deleted_at?: string | null
           description?: string | null
           id?: string
           title?: string
-          transcript?: string | null
+          transcript?: Json | null
           user_id?: string
         }
         Relationships: []

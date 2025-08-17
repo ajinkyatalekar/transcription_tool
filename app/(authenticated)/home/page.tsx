@@ -19,7 +19,7 @@ import { useEffect } from "react";
 
 const testRun = async () => {
   try {
-    const response = await fetch("http://3.22.222.144:8000/run", {
+    const response = await fetch("https://api.craft4free.online/transcribe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,10 +37,6 @@ const testRun = async () => {
 export default function Home() {
   const { recordings, loading, refetch } = useRecordings();
   const router = useRouter();
-
-  useEffect(() => {
-    testRun();
-  }, []);
 
   return (
     <>
@@ -102,10 +98,16 @@ export default function Home() {
                     {formatDate(recording.created_at)}
                   </p>
                 </div>
-                <p className="text-sm text-gray-500">
+                {/* <p className="text-sm text-gray-500">
                   {recording.transcript?.slice(0, 80)}
                   {recording.transcript?.length &&
                     recording.transcript?.length > 80 &&
+                    "..."}
+                </p> */}
+                <p className="text-sm text-gray-500">
+                  {(recording.transcript as any)?.raw_response?.transcription?.text?.slice(0, 80)}
+                  {(recording.transcript as any)?.raw_response?.transcription?.text?.length &&
+                    (recording.transcript as any)?.raw_response?.transcription?.text?.length > 80 &&
                     "..."}
                 </p>
               </div>

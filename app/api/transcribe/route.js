@@ -1,4 +1,3 @@
-import AWS from "aws-sdk";
 import { supabase, supabaseAdmin } from "@/app/utils/supabase";
 
 export async function POST(request) {
@@ -18,24 +17,37 @@ export async function POST(request) {
       return Response.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Transcribe audio using AWS SageMaker
-    const sagemakerRuntime = new AWS.SageMakerRuntime({
-      region: process.env.NEXT_PUBLIC_AWS_REGION,
-      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+    // Transcribe audio using the new API endpoint
+    const transcribeResponse = await fetch("https://api.craft4free.online/transcribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        audio_base64: audioBase64
+      }),
     });
 
-    const params = {
-      EndpointName: process.env.NEXT_PUBLIC_SAGEMAKER_ENDPOINT_NAME,
-      Body: Buffer.from(audioBase64, "base64"),
-      ContentType: "audio/x-audio",
-    };
+    if (!transcribeResponse.ok) {
+      const errorText = await transcribeResponse.text();
+      console.error('Transcription API error:', errorText);
+      return Response.json({ error: 'Transcription failed' }, { status: transcribeResponse.status });
+    }
 
-    const response = await sagemakerRuntime.invokeEndpoint(params).promise();
-    const result = JSON.parse(Buffer.from(response.Body).toString("utf8"));
+    const result = await transcribeResponse.json();
     
-    // Extract transcript from the result (adjust based on your SageMaker output format)
-    const transcript = result.transcript || result.text || JSON.stringify(result);
+    // Extract transcript from the result and structure it properly for JSONB storage
+    const transcriptText = result.transcript || result.text || '';
+    
+    // Create a structured transcript object for JSONB storage
+    const transcript = {
+      text: transcriptText,
+      raw_response: result,
+      timestamp: new Date().toISOString(),
+      confidence: result.confidence || null,
+      segments: result.segments || null,
+      language: result.language || null
+    };
 
     // Store in Supabase recordings table using service role key
     const { data: recording, error: insertError } = await supabaseAdmin
