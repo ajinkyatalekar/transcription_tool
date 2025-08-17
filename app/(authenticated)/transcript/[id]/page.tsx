@@ -25,7 +25,7 @@ import { InteractiveTranscript } from "@/components/interactiveTranscript";
 export default function TranscriptPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { recordings } = useRecordings();
+  const { recordings, updateRecording } = useRecordings();
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -177,6 +177,14 @@ export default function TranscriptPage() {
               transcript={recording.transcript as any}
               currentTime={currentTime}
               onSeek={handleSeek}
+              onTranscriptUpdate={(updatedTranscript) => {
+                // Update the recording in the context
+                if (recording) {
+                  updateRecording(recording.id, {
+                    transcript: updatedTranscript as any,
+                  });
+                }
+              }}
             />
           ) : (
             <p className="text-muted-foreground">No transcript available</p>
