@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
-import { Skeleton } from "./ui/skeleton";
 
 interface AudioPlayerProps {
   audioUrl: string;

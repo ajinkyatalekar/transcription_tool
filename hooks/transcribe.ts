@@ -16,9 +16,9 @@ const uploadFile = async (file: File) => {
 
   if (error) {
     console.error('Error uploading file:', error.message);
+    throw error;
   } else {
     console.log('File uploaded successfully:', data);
-
     return data.path;
   }
 };
@@ -36,9 +36,6 @@ export function useTranscribe(): UseUploadAudioReturn {
     setIsUploading(true);
     try {
       const path = await uploadFile(selectedFile);
-      
-      const arrayBuffer = await selectedFile.arrayBuffer();
-      const base64 = Buffer.from(arrayBuffer).toString("base64");
 
       // Get auth token
       const {
@@ -52,7 +49,7 @@ export function useTranscribe(): UseUploadAudioReturn {
         throw new Error("Not authenticated");
       }
 
-      // Call the transcribe API
+      // Call the transcribe API with only the bucket path
       const response = await fetch("/api/transcribe", {
         method: "POST",
         headers: {
@@ -60,9 +57,8 @@ export function useTranscribe(): UseUploadAudioReturn {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          audioBase64: base64,
-          title: title.trim(),
           audioUrl: path,
+          title: title.trim(),
         }),
       });
 
@@ -79,6 +75,7 @@ export function useTranscribe(): UseUploadAudioReturn {
 
       toast.success("Audio uploaded and transcribed successfully!");
     } catch (error) {
+      console.error('Upload error:', error);
       toast.error(
         "Something went wrong. Please try again later."
       );

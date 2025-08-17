@@ -2,7 +2,7 @@ import { supabase, supabaseAdmin } from "@/app/utils/supabase";
 
 export async function POST(request) {
   try {
-    const { audioBase64, title, audioUrl } = await request.json();
+    const { audioUrl, title } = await request.json();
     
     // Get user ID from the Authorization header
     const authHeader = request.headers.get('authorization');
@@ -17,6 +17,20 @@ export async function POST(request) {
       return Response.json({ error: 'Invalid token' }, { status: 401 });
     }
 
+    // Fetch audio file from Supabase storage
+    const { data: audioData, error: downloadError } = await supabaseAdmin.storage
+      .from('audio')
+      .download(audioUrl);
+
+    if (downloadError) {
+      console.error('Error downloading audio file:', downloadError);
+      return Response.json({ error: 'Failed to download audio file' }, { status: 500 });
+    }
+
+    // Convert audio file to base64
+    const arrayBuffer = await audioData.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+
     // Transcribe audio using the new API endpoint
     const transcribeResponse = await fetch("https://api.craft4free.online/transcribe", {
       method: "POST",
@@ -24,7 +38,7 @@ export async function POST(request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        audio_base64: audioBase64
+        audio_base64: base64
       }),
     });
 
