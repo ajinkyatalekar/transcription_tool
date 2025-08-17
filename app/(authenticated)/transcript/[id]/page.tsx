@@ -20,6 +20,7 @@ import { EditIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { ProjectSettingsDialog } from "@/components/projectSettingsDialog";
+import { InteractiveTranscript } from "@/components/interactiveTranscript";
 
 export default function TranscriptPage() {
   const { id } = useParams();
@@ -82,14 +83,29 @@ export default function TranscriptPage() {
   }, [recording?.audio_url]);
 
   const [fullTranscript, setFullTranscript] = useState<string>("");
+  const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     if (recording?.transcript) {
-      setFullTranscript((recording.transcript as any)?.raw_response?.transcription?.text);
+      setFullTranscript(
+        (recording.transcript as any)?.raw_response?.transcription?.text
+      );
     }
 
     console.log(recording?.transcript);
   }, [recording?.transcript]);
+
+  const handleSeek = (time: number) => {
+    setCurrentTime(time);
+    // Actually seek the audio element
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+    }
+  };
+
+  const handleTimeUpdate = (time: number) => {
+    setCurrentTime(time);
+  };
 
   if (!recording) {
     return (
@@ -152,15 +168,33 @@ export default function TranscriptPage() {
         </div>
         <Separator className="my-4" />
         <div className="mt-4" />
-        <p>{JSON.stringify(recording.transcript)}</p>
-        <p>{fullTranscript}</p>
+
+        {/* Interactive Transcript */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Transcript</h3>
+          {recording.transcript ? (
+            <InteractiveTranscript
+              transcript={recording.transcript as any}
+              currentTime={currentTime}
+              onSeek={handleSeek}
+            />
+          ) : (
+            <p className="text-muted-foreground">No transcript available</p>
+          )}
+        </div>
       </main>
 
       {/* Audio Player - Fixed at bottom */}
-      <footer className="border-t bg-background p-4">
+      <footer className="border-t bg-background p-4 fixed bottom-0 left-0 right-0 md:left-[var(--sidebar-width)] md:group-data-[state=collapsed]:left-[var(--sidebar-width-icon)]">
         <div className="max-w-4xl mx-auto">
           {recording.audio_url ? (
-            <AudioPlayer audioUrl={recording.audio_url} audioBlob={audioBlob} />
+            <AudioPlayer
+              audioUrl={recording.audio_url}
+              audioBlob={audioBlob}
+              onSeek={handleSeek}
+              onTimeUpdate={handleTimeUpdate}
+              audioRef={audioRef}
+            />
           ) : (
             <div className="flex items-center justify-center p-4 border rounded-lg">
               <div className="text-sm text-muted-foreground">

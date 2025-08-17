@@ -9,11 +9,17 @@ import { Skeleton } from "./ui/skeleton";
 interface AudioPlayerProps {
   audioUrl: string;
   audioBlob?: Blob | null;
+  onSeek?: (time: number) => void;
+  onTimeUpdate?: (time: number) => void;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
 }
 
 export function AudioPlayer({
   audioUrl,
   audioBlob: providedAudioBlob,
+  onSeek,
+  onTimeUpdate,
+  audioRef: externalAudioRef,
 }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -21,7 +27,8 @@ export function AudioPlayer({
   const [audioBlob, setAudioBlob] = useState<Blob | null>(
     providedAudioBlob || null
   );
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const internalAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = externalAudioRef || internalAudioRef;
 
   // Download audio from Supabase storage (only if no audioBlob is provided)
   useEffect(() => {
@@ -49,6 +56,7 @@ export function AudioPlayer({
     const updateTime = () => {
       if (!isNaN(audio.currentTime)) {
         setCurrentTime(audio.currentTime);
+        onTimeUpdate?.(audio.currentTime);
       }
     };
 
@@ -112,9 +120,14 @@ export function AudioPlayer({
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
+    seekTo(newTime);
+  };
+
+  const seekTo = (time: number) => {
     if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+      onSeek?.(time);
     }
   };
 
@@ -124,9 +137,9 @@ export function AudioPlayer({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  if (!providedAudioBlob) {
-    return <Skeleton className="w-full h-10" />;
-  }
+  // if (!providedAudioBlob) {
+  //   return <Skeleton className="w-full h-10" />;
+  // }
 
   return (
     <div className="w-full p-4 border rounded-lg bg-background">
@@ -154,6 +167,7 @@ export function AudioPlayer({
         onTimeUpdate={() => {
           if (audioRef.current && !isNaN(audioRef.current.currentTime)) {
             setCurrentTime(audioRef.current.currentTime);
+            onTimeUpdate?.(audioRef.current.currentTime);
           }
         }}
         onEnded={() => {

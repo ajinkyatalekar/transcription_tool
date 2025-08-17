@@ -129,7 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       isActive={pathname === `/transcript/${recording.id}`}
                     >
                       <Link href={`/transcript/${recording.id}`}>
-                        {recording.title}
+                        {recording.title.slice(0, 20)}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

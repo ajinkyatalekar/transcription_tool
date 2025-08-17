@@ -37,9 +37,9 @@ export function UploadAudioDialog() {
       }
 
       // Check file size (20MB = 20 * 1024 * 1024 bytes)
-      const maxSize = 20 * 1024 * 1024; // 20MB in bytes
+      const maxSize = 30 * 1024 * 1024; // 20MB in bytes
       if (file.size > maxSize) {
-        toast.error("File size must be under 20MB");
+        toast.error("File size must be under 30MB");
         return;
       }
 
@@ -93,7 +93,7 @@ export function UploadAudioDialog() {
         <DialogHeader>
           <DialogTitle>Upload Audio File</DialogTitle>
           <DialogDescription>
-            Select a .wav file under 20MB to transcribe. The file will be
+            Select a .wav file under 30MB to transcribe. The file will be
             processed and added to your transcript history.
           </DialogDescription>
         </DialogHeader>
